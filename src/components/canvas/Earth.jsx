@@ -1,64 +1,22 @@
-import React, { Suspense, useRef, useEffect, useState } from "react";
+import React, { Suspense, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Preload, useGLTF, PositionalAudio } from "@react-three/drei";
+import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
 
 import CanvasLoader from "../Loader";
 
-const Earth = ({ isVisible }) => {
+const Earth = () => {
   const earth = useGLTF("./planetp/scene.gltf");
-  const soundRef = useRef();
-
-  useEffect(() => {
-    if (isVisible && soundRef.current) {
-      // Play sound when the planet is visible
-      soundRef.current.play();
-    } else if (soundRef.current) {
-      // Stop sound when the planet is not visible
-      soundRef.current.stop();
-    }
-  }, [isVisible]);
 
   return (
     <>
       <primitive object={earth.scene} scale={1.2} position-y={0} rotation-y={0} />
-
-      {/* Sound attached to the planet */}
-      <PositionalAudio
-        ref={soundRef}
-        url="./sounds/sonic.mp3" // Your sound file
-        distance={1}
-        loop
-      />
     </>
   );
 };
 
 const EarthCanvas = () => {
-  const canvasRef = useRef();
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Set visibility based on intersection of the canvas
-        setIsVisible(entry.isIntersecting);
-      },
-      { threshold: 0.5 } // Trigger when 50% of the canvas is visible
-    );
-
-    if (canvasRef.current) {
-      observer.observe(canvasRef.current);
-    }
-
-    return () => {
-      if (canvasRef.current) {
-        observer.unobserve(canvasRef.current);
-      }
-    };
-  }, []);
-
   return (
-    <div ref={canvasRef} className="h-full"> {/* Wrapper for the canvas to observe visibility */}
+    <div className="h-full">
       <Canvas
         shadows
         frameloop="demand"
@@ -84,8 +42,8 @@ const EarthCanvas = () => {
           <directionalLight position={[5, 10, 5]} intensity={1} />
           <pointLight position={[-10, -10, -10]} intensity={0.5} />
 
-          {/* Earth Model with Sound */}
-          <Earth isVisible={isVisible} />
+          {/* Earth Model */}
+          <Earth />
 
           <Preload all />
         </Suspense>
@@ -95,5 +53,3 @@ const EarthCanvas = () => {
 };
 
 export default EarthCanvas;
-
-
