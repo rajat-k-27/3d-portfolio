@@ -27,7 +27,7 @@ const Hero = () => {
 
       <ComputersCanvas />
       <div className='absolute xs:bottom-1 bottom-20 w-full flex justify-center items-center'>
-        <a href='#about'>
+        <a href='#about' aria-label="scroll">
           <div className='w-[35px] h-[64px] rounded-3xl border-4 border-secondary flex justify-center items-start p-2'>
             <motion.div
               animate={{
